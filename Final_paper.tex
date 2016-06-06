@@ -1,0 +1,92 @@
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{authblk}
+\usepackage{biblatex}
+\usepackage[english]{babel}
+\begin{document}
+
+
+\date{}
+
+\title{\Large \bf Explaining baby name popularity: A case study of virality prediction}
+
+\author[1]{Aditya Rao\thanks{adityakatapadi@cs.ucla.edu}}
+\author[2]{Dr. Stott Parker\thanks{stott@cs.ucla.edu}}
+\affil[1]{Master of Science, Computer Science, UCLA}
+\affil[2]{Professor, Department of Computer Science, UCLA}
+\maketitle
+
+\thispagestyle{empty}
+
+
+\subsection*{Abstract}
+Names, goods and ideologies are adopted by society through various mechanisms. Adoption driven by novelty is extensively studied by marketing economics\cite{marketing paper}. This paper attempts to identify a pattern in the decision making process of choosing baby names. The data for this is readily made available by the US Social Security Administration in the internet \cite{voyagersite}. This paper explores two scenarios: a plausible time series model to predict the most popular names (top 5) over the coming years, and the diffonential distribution \cite{preston}, which also proves to be a good fit for most names.
+
+\section{Introduction}
+Choosing a name for the newborns appears to be a complicated task. Parents' go to great lengths to ensure that the name sounds right with the family name and that it does not have any negative connotations. Moreover, research studies also paint a strong correlation between unusual names, names with negative connotations and the likelihood of having a lonely, overall unhappy life. One study found that psychiatric patients with more unusual names tended to be more disturbed.\cite{http://www.bbc.com/news/magazine-26634477}. Thus, nowadays parents go to great lengths to decide the right name for their child.
+Religious texts, town/country/city names make up for a bulk of the baby names. For instance, of the 36,000 odd, unique names assigned to boys across the USA since 1880, only about a thousand were not borrowed from any of the sources mentioned earlier. Such names are either variations of the already existing names or derivations from multiple such existing names. For example, Jamie is derived from James, Rob/Bob from Robert, Rich from Richard and so on. 
+
+Nonetheless, nowadays parents rely on a variety of sources to narrow down their choices. Some papers pin the decision making process on a taste-based argument \cite{2}. This concept is akin to that of fads \cite{fad definition} and trends \cite{trend definition}. Hence, various first names go through an initial rise in popularity until they reach a peak and then go extinct. For a name to subsist much longer, there has to be positive social stimuli\cite{define social stimulus}. A social stimulus plays an important role in deciding the future of a first name. It can either cause the decline in popularity of a name or contribute to the longevity of the name. For example, after World War 2, the first name Adolf had a very steep decline, the negative association with Adolf Hitler being the reason for the accelerated fall. On the contrary, the first name Ronald had a sharp increase in popularity, the positive association with Ronald Regan being the reason for the accelerated rise. Names with multiple social stimuli usually resemble a multi-modal frequency distribution, with the stimuli reviving the frequency distribution at various time intervals.
+This paper also considers the taste-based argument put forth by Coulmont et al. \cite{2}. This can be clearly seen in names such as Jeff, which reflect a beginning enthusiasm, rising fast to a peak. This is generally followed by a subsequent, gradual lack of interest, possibly as parents note that there are many children around with that name.
+
+
+Most of the distributions can be approximately modelled by a frequency function based on the diffonential distribution \cite{preston}. The curve, to a certain extent, reflects the parents' changing enthusiasm for a particular name.
+ 
+\section{Related Concepts}
+Time series models can be useful in the prediction of a trend, while dealing with time sensitive data. Holt's model and Holt-Winter's model are first used to predict the life cycle of a name as such and then as an estimator for the parameters of the diffonential equation.
+
+\subsection{Holt's Model}
+
+
+\subsection{Holt-Winters Model}
+The Holt-Winters model is defined as
+
+$F_{t+1} =( a_{t} + b_{t} ) * c_{t}$ where $F_{t}$ is the forecast for the time period t, 
+
+$a_{t} = \alpha * (\dfrac {D_{t+1}} {C_{t+1}}) $
+
+Holt-Winters model is very accurate in predicting the trend of name after feeding it about 60 years of the frequency data. The recent names which have shot to popularity in the last 20 years aren't too well pr
+
+\section{A Diffonential Distribution Fit}
+The diffonential distribution is the difference of two exponentials, hence the name. It was first introduced by Preston et al.\cite{1948 preston}. The frequency distribution of a diffonential distribution has a few interesting properties similar to that of a typical frequency distribution for a name.  The curve has a steep rise to a peak and then a slow fall. Names with no or very little social stimuli to revive them, tend to follow the diffonential distribution. 
+
+
+The parameters a and c behave in an interesting way. The value of the coefficient c rises when the name frequency increases whereas the value of a remains relatively constant occasionally fluctuating between -5 and 0 for most names. 
+\subsection{Parameter Estimation}
+\subsection{Parameter Estimation}
+
+
+\subsection{Holt-Winters Model As An Estimator}
+
+\subsection{Recursive Parameter Estimation}
+The parameters of the diffonential curve fit are themselves diffonential in nature. 
+
+
+\section{Results}
+
+
+
+\section{Conclusion}
+
+
+
+\begin{thebibliography}{9}
+
+\bibitem{1}
+Goffman, W. and Newill, V. A. 
+\textit{Generalization of epidemic theory: An application to the transmission of ideas.} Nature 204, 225–228 (1964).
+\bibitem{2}
+Lieberson S (2000) 
+\textit{A Matter of Taste. How Names, Fashions, and Culture Change.}
+New Haven et Londres: Yale University Press
+
+\end{thebibliography}
+
+
+\end{document}
+
+
+
