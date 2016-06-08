@@ -1,17 +1,30 @@
-\documentclass[letterpaper,10pt]{article}
-
+\documentclass[letterpaper,12pt]{article}
+\usepackage{placeins}
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{authblk}
 \usepackage{biblatex}
 \usepackage[english]{babel}
+\usepackage{graphicx}
+\graphicspath{ /home/aditya/Documents/Final Project UCLA/}
+\usepackage{float}
+\makeatletter
+\AtBeginDocument{%
+  \expandafter\renewcommand\expandafter\subsection\expandafter
+    {\expandafter\@fb@secFB\subsection}%
+  \newcommand\@fb@secFB{\FloatBarrier
+    \gdef\@fb@afterHHook{\@fb@topbarrier \gdef\@fb@afterHHook{}}}%
+  \g@addto@macro\@afterheading{\@fb@afterHHook}%
+  \gdef\@fb@afterHHook{}%
+}
+\makeatother
 \begin{document}
 
 
 \date{}
 
-\title{\Large \bf Explaining baby name popularity: A case study of virality prediction}
+\title{\Large \bf Explaining baby name popularity: A mathematical perspective}
 
 \author[1]{Aditya Rao\thanks{adityakatapadi@cs.ucla.edu}}
 \author[2]{Dr. Stott Parker\thanks{stott@cs.ucla.edu}}
@@ -21,68 +34,139 @@
 
 \thispagestyle{empty}
 
-
+\pagebreak
 \subsection*{Abstract}
-Names, goods and ideologies are adopted by society through various mechanisms. Adoption driven by novelty is extensively studied by marketing economics\cite{marketing paper}. This paper attempts to identify a pattern in the decision making process of choosing baby names. The data for this is readily made available by the US Social Security Administration in the internet \cite{voyagersite}. This paper explores two scenarios: a plausible time series model to predict the most popular names (top 5) over the coming years, and the diffonential distribution \cite{preston}, which also proves to be a good fit for most names.
+Names, goods and ideologies are adopted by society through various mechanisms. Adoption driven by novelty is extensively studied by marketing economics\cite{3}. This paper attempts to identify a pattern in the decision making process of choosing baby names. The data for this is readily made available by the US Social Security Administration in the internet \cite{4}. This paper explores the diffonential distribution \cite{6} as a possible fit for the frequency distribution of a name. This paper also proposes time-series based and a normal distribution based parameter estimation techniques for the diffonential distributions. 
+
+\section*{Acknowledgements}
+I would like to thank Prof.Stott Parker for his guidance and support.
+\pagebreak
 
 \section{Introduction}
-Choosing a name for the newborns appears to be a complicated task. Parents' go to great lengths to ensure that the name sounds right with the family name and that it does not have any negative connotations. Moreover, research studies also paint a strong correlation between unusual names, names with negative connotations and the likelihood of having a lonely, overall unhappy life. One study found that psychiatric patients with more unusual names tended to be more disturbed.\cite{http://www.bbc.com/news/magazine-26634477}. Thus, nowadays parents go to great lengths to decide the right name for their child.
+Choosing a name for the newborns appears to be a complicated task. Parents' go to great lengths to ensure that the name sounds right with the family name and that it does not have any negative connotations. Moreover, research studies also paint a strong correlation between unusual names, names with negative connotations and the likelihood of having a lonely, overall unhappy life. One study found that psychiatric patients with more unusual names tended to be more disturbed.\cite{5}. Thus, nowadays parents go to great lengths to decide the right name for their child.
 Religious texts, town/country/city names make up for a bulk of the baby names. For instance, of the 36,000 odd, unique names assigned to boys across the USA since 1880, only about a thousand were not borrowed from any of the sources mentioned earlier. Such names are either variations of the already existing names or derivations from multiple such existing names. For example, Jamie is derived from James, Rob/Bob from Robert, Rich from Richard and so on. 
 
-Nonetheless, nowadays parents rely on a variety of sources to narrow down their choices. Some papers pin the decision making process on a taste-based argument \cite{2}. This concept is akin to that of fads \cite{fad definition} and trends \cite{trend definition}. Hence, various first names go through an initial rise in popularity until they reach a peak and then go extinct. For a name to subsist much longer, there has to be positive social stimuli\cite{define social stimulus}. A social stimulus plays an important role in deciding the future of a first name. It can either cause the decline in popularity of a name or contribute to the longevity of the name. For example, after World War 2, the first name Adolf had a very steep decline, the negative association with Adolf Hitler being the reason for the accelerated fall. On the contrary, the first name Ronald had a sharp increase in popularity, the positive association with Ronald Regan being the reason for the accelerated rise. Names with multiple social stimuli usually resemble a multi-modal frequency distribution, with the stimuli reviving the frequency distribution at various time intervals.
-This paper also considers the taste-based argument put forth by Coulmont et al. \cite{2}. This can be clearly seen in names such as Jeff, which reflect a beginning enthusiasm, rising fast to a peak. This is generally followed by a subsequent, gradual lack of interest, possibly as parents note that there are many children around with that name.
+Nonetheless, nowadays parents rely on a variety of sources to narrow down their choices. Some papers pin the decision making process on a taste-based argument \cite{2}. This concept is akin to that of fads \footnote{a short-term event, what some may call a "flash in the pan".} and trends \footnote{similar to a fad, but has the potential of becoming a long-term influence on the future of a market}. Hence, various first names go through an initial rise in popularity until they reach a peak and then go extinct. For a name to subsist much longer, there has to be positive social stimuli\footnote{ a factor that significantly contributes to the rise of a name or to its fall }. A social stimulus plays an important role in deciding the future of a first name. It can cause the rapid decline in popularity of a name or contribute to the longevity of the name. For example, after World War 2, the first name Adolf had a very steep decline, the negative association with Adolf Hitler being the reason for the accelerated fall. On the contrary, the first name Ronald had a sharp increase in popularity, the positive association with Ronald Regan being the reason for the accelerated rise. Names with multiple social stimuli usually resemble a multi-modal frequency distribution, with the stimuli reviving the frequency distribution at various time intervals.
+This paper also considers the taste-based argument put forth by Coulmont et al. \cite{3}. This can be clearly seen in names such as Jeff, which reflect a beginning enthusiasm, rising fast to a peak. This is generally followed by a subsequent, gradual lack of interest, possibly as parents note that there are many children around with that name.
 
 
-Most of the distributions can be approximately modelled by a frequency function based on the diffonential distribution \cite{preston}. The curve, to a certain extent, reflects the parents' changing enthusiasm for a particular name.
+Most of the distributions can be approximately modelled by a frequency function based on the diffonential distribution \cite{6}. The curve, to a certain extent, reflects the parents' changing enthusiasm for a particular name.
  
-\section{Related Concepts}
-Time series models can be useful in the prediction of a trend, while dealing with time sensitive data. Holt's model and Holt-Winter's model are first used to predict the life cycle of a name as such and then as an estimator for the parameters of the diffonential equation.
+\section{Related Work}
 
-\subsection{Holt's Model}
+In their paper \cite{7} Bengt Sigurd et al., proposed a shape-based explanation for the frequency distribution of names in Norway. They classified the name frequency curves as asymmetric, symmetric and gamma. The asymmetric ones had a slow rise followed by  
+a faster fall, the symmetric ones were similar to a normal curve and the gamma names had an initial fast rise followed by a slower fall. They modelled gamma names around the equation $f = a.t^{b}.c^{t}$. The paper concludes on the observation that the gamma curve dominates in other cultures where names are given freely (without any external influence).\\
 
-
-\subsection{Holt-Winters Model}
-The Holt-Winters model is defined as
-
-$F_{t+1} =( a_{t} + b_{t} ) * c_{t}$ where $F_{t}$ is the forecast for the time period t, 
-
-$a_{t} = \alpha * (\dfrac {D_{t+1}} {C_{t+1}}) $
-
-Holt-Winters model is very accurate in predicting the trend of name after feeding it about 60 years of the frequency data. The recent names which have shot to popularity in the last 20 years aren't too well pr
-
-\section{A Diffonential Distribution Fit}
-The diffonential distribution is the difference of two exponentials, hence the name. It was first introduced by Preston et al.\cite{1948 preston}. The frequency distribution of a diffonential distribution has a few interesting properties similar to that of a typical frequency distribution for a name.  The curve has a steep rise to a peak and then a slow fall. Names with no or very little social stimuli to revive them, tend to follow the diffonential distribution. 
+Coulmont et al.\cite{3}, made use of the Bass model, 
+$\dfrac{dN}{dt} = [p+q(\dfrac{N}{K})](K-N)$ to draw similarities between the success of a product and the choosing of baby names. The paper is based on the assumption that incorporating the principles of population-level diffusion dynamics, implicitly incorporates the distinct traits of individual-level behaviour. The model corroborates the well known argument that popular names may be driven by fashion. Most of the work done by me is influenced by this paper.
 
 
-The parameters a and c behave in an interesting way. The value of the coefficient c rises when the name frequency increases whereas the value of a remains relatively constant occasionally fluctuating between -5 and 0 for most names. 
-\subsection{Parameter Estimation}
-\subsection{Parameter Estimation}
+\section{A Diffonential Distribution Fit For Baby Names}
 
+The diffonential distribution is a difference of two exponentials, hence the name. It was first introduced by Preston et al.\cite{6}. The frequency distribution of a diffonential distribution has a few interesting properties similar to that of a typical frequency distribution for a name.  The curve has a steep rise to a peak and then a slow fall. Names with no or very little social stimuli to revive them, tend to follow the diffonential distribution. 
 
-\subsection{Holt-Winters Model As An Estimator}
+The diffonential distribution has the general form \pmb{ $f(t)= b(e^{-at} - e^{-ct})$}. The sign and magnitude of the coefficients \pmb{$a$} and \pmb{$c$} determine the general shape of the curve. The parameters \pmb{$a$} and \pmb{$c$} behave in an interesting way. The value of the coefficient \pmb{$c$} spikes whenever the frequency distribution of the name experiences a sudden increase. The coefficient \pmb{$a$} remains relatively constant reaching a minima at the point of highest popularity of the name.
 
-\subsection{Recursive Parameter Estimation}
-The parameters of the diffonential curve fit are themselves diffonential in nature. 
+Without taking into account the influences such as immigration, name saturation, name connotation etc., two ways prove to be effective in determining the parameter values:
+1) Using a Gaussian Curve as an estimator
+2) Using the Gamma distribution
+ 
+\subsection{Parameter Estimation: Gaussian Estimation}
+The Gaussian distribution can be defined as 
+$G(t)=\dfrac{1}{\sqrt{2\pi}\sigma}e^{\dfrac{(t-\mu)^2}{2\sigma^{2}}}$ where $\sigma^{2}$ is the variance and $\mu$ is the mean of the distribution.\\
+The parameters can be estimated as follows:\\
+\textsc{ Step 1:} Determine the global maxima of frequency distribution of the name. \\
+\textsc{ Step 2:} Solve the diffonential equation for coefficients \pmb{$a$} and \pmb{$c$} at the global maxima.\\
+\textsc{ Step 3:} Fit a Gaussian curve to match the height and time period of the global maxima of co-efficient \pmb{$c$}. \\
+\textsc{ Step 4:} Fit a Gaussian curve to match the height and time period of the global minima of co-efficient \pmb{$a$}. In almost all cases, this occurs during the maxima of coefficient \pmb{$c$}.\\
+The value at a given time \pmb{$t$} of the resulting Gaussian curves is the estimated value of \pmb{$c$} and \pmb{$a$}.
+In order to maintain an agreeable relationship between the height and width of the Gaussian curves, the Gaussian distribution is scaled by a suitable factor.
+This rather simple estimation technique works remarkably well for unimodal distributions.
+For example, consider the name Jennifer. This name gains popularity during the 1940s gathers momentum and reaches a peak during 1970 only to fade away again in the 20th century.\\Any unimodal name is well captured by the estimator. The name Noah peaked late in the 19th century. This is captured by the Gaussian estimator as shown in figure 2.\\
+The figures show a high correlation between the actual value of the parameters \pmb{$a$} and \pmb{$c$} (which would give the actual number of births with that name) and the value of the parameters estimated by the Gaussian estimator. \\
+\begin{figure}[!htb]
+\includegraphics[scale=0.4]{jennifer_gaussian_estimator.png}
+\caption{Estimation for Jennifer}
+\end{figure}
+\begin{figure}[!htb]
+\includegraphics[scale=0.7]{noah_gaussian_estimator.png}
+\caption{Estimation for Noah}
+\end{figure}
 
+\subsection{Parameter Estimation: Iterative Gaussian Estimation}
+A better estimate of the parameters can be obtained by finding the local maxima(or minima) of the frequency distribution of the coefficients and then fitting a Gaussian curve to each of the local maxima(or minima) by the parameter estimation method mentioned above. The Gaussian curves for each local maxima are then added to get a better estimate for the parameters distribution.
+The window size used to determine local maxima is 34. A smaller window size generally gives better results however, it also tends to cause unnecessary ripples in the distribution of the parameter estimate.
+The figures 3 and 4 compare the iterative Gaussian estimations with the Gaussian estimations.\\
+\begin{figure}[!htb]
+\includegraphics[scale=0.4]{jennifer_itr_gaussian_estimator.png}
+\caption{Iterative Gaussian Parameter-Estimation for Jennifer}
+\end{figure}
+\begin{figure}[!htb]
+\includegraphics[scale=0.4]{noah_itr_gaussian_estimator.png}
+\caption{Iterative Gaussian Parameter-Estimation for Noah}
+\end{figure}
 
-\section{Results}
+The difference between the estimated value and the actual value of the parameters \pmb{$a$} and \pmb{$c$} compensates for any overestimation/ underestimation as the parameters \pmb{$a$} and \pmb{$c$} peak in tandem.
+\pagebreak
 
+\subsection{Holt's Model As An Estimator}
+Holt's model can be defined as
 
+\pmb{$F_{t+1} = a_{t} + b_{t} $ }  where, \\
+\pmb{$F_{t}$} is the forecast for the time period t, \\
+\pmb{$a_{t} = \alpha (\dfrac {D_{t+1}} {C_{t+1}}) + (1-\alpha) (a_{t}+b_{t})$} is the \textit{level}, which represents the smoothed value up to the last data, \\
+\pmb{$b_{t} = \beta (a_{t}- a_{t-1}) + (1-\beta) (b_{t-1})$ } is the estimated trend.
 
+Holt's model is handy because it allows for the inclusion of other parameters that could be used to determine the frequency distribution of a name. A particular variation of the Holt's model, also called the Holt-Winters' model, includes a useful parameter which is often termed  "seasonality".\\
+The Holt-Winters' model can be defined as \pmb{$F_{t+1} = ( a_{t} + b_{t} )c_{t} $ } where  \pmb{$c_{t}$} is the \textit{seasonality} and is calculated iteratively by using the relation,\\ \pmb{$c_{t+p+1}=\gamma \dfrac{D_{t+1}}{a_{t+1}} + (1-\gamma) c_{t+1}$}.\\
+The Holt-Winters' model works well as such for the prediction of the frequency distribution of the name as such, and, as an estimator for the diffonential distribution coefficients.
+The seasonality is particularly handy as it can be used to provide localized estimates. For example, consider the name Noah. It started gaining popularity during the late nineties.By considering the first 34 years as one "season" (which leaves us with about 4 seasons), the Holt-Winters' model gives a very accurate prediction.  
+The following figures show the actual parameters and the estimated parameters using Holt's  model. 
+
+\begin{figure}
+\includegraphics[scale=0.4]{jennifer_holts_estimator.png}
+\caption{Holt's Parameter-Estimation for Jennifer}
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.4]{noah_holts_estimator_1.png}
+\caption{Holt's Parameter-Estimation for Noah }
+
+\includegraphics[scale=0.4]{jennifer_holts_estimator_2.png}
+\caption{Holt-Winters' Parameter-Estimation for Jennifer }
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.4]{noah_holts_estimator_2.png}
+\caption{Holt-Winters' Parameter-Estimation for Noah}
+\end{figure}
+By tweaking the parameters $\alpha$ and $\beta$, the model can be used to predict the diffonential distribution parameters with good accuracy. An interesting property about Holt-Winters' model is that the actual data, $D_{t}$ can be can be replaced by the forecast $F_{t}$, in equations for the level ($a_{t}$), trend ($b_{t}$) and seasonality ($c_{t}$). This gives very accurate results with the right window size. This is due to seasonality. 
+\pagebreak
 \section{Conclusion}
-
+The parameters involved in the estimation of the distribution of a name are in many forms and numbers. The focus of this paper was on trying to come up with a satisfactory model to predict the frequency distribution of names. Having studied the properties of the diffonential distribution and the various methods implemented to estimate the parameters for the diffonential distribution, I believe that the Holt-Winters' model gives the best fit for the correct window size and seasonality. For most names the accuracy levels were above 90\% for the Holt-Winters' model based estimation, 80\% for the Iterative Gaussian based estimation. The Gaussian estimation performed poorly for names which had frequent rise and fall. However, the Gaussian estimation was very effective for names that encountered only a single steep rise during their lifetime thus far.  
 
 
 \begin{thebibliography}{9}
 
 \bibitem{1}
-Goffman, W. and Newill, V. A. 
+Goffman, W. and Newill, V. A. \\
 \textit{Generalization of epidemic theory: An application to the transmission of ideas.} Nature 204, 225–228 (1964).
 \bibitem{2}
-Lieberson S (2000) 
+Lieberson S (2000) \\
 \textit{A Matter of Taste. How Names, Fashions, and Culture Change.}
 New Haven et Londres: Yale University Press
-
+\bibitem{3}
+Baptiste Coulmont, Virginie Supervie, and Romulus Breban\\
+\textit{The diffusion dynamics of choice: From durable goods markets to fashion first names}
+\bibitem{4}
+http://www.babynamewizard.com/voyager
+\bibitem{5}
+http://www.bbc.com/news/magazine-26634477
+\bibitem{6}
+F.W. Preston  (Ecology, Vol. 62, No. 2. (Apr., 1981), pp. 355-364).\\
+\textit{Pseudo-Lognormal Distributions}
+\bibitem{7}
+Bengt Sigurd, Mats Eeg-Olofsson and Jørgen Ouren\\
+\textit{Modelling the changing popularity of names}\\
+http://journals.lub.lu.se/index.php/LWPL/article/view/2345/1920
 \end{thebibliography}
 
 
